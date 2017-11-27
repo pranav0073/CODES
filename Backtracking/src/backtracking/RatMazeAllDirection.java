@@ -14,25 +14,42 @@ package backtracking;
 import java.util.*;
 import java.lang.*;
 import java.io.*;
+import java.awt.Point;
 
-/* Name of the class has to be "Main" only if the class is public. */
+/*
+condition : rat can move in all four directions forward, backward, upward and downward
+*/
 
-/*matrix for test case
-rat can move forward or downward only
- {1, 0, 0, 0}
- {1, 1, 0, 1}
- {0, 1, 0, 0}
- {1, 1, 1, 1}
+/* maze input
+                {1, 1, 0, 1, 1, 1},
+                {1, 1, 1, 1, 0, 1},
+                {0, 0, 0, 0, 0, 1},
+                {1, 1, 1, 1, 1, 1},
+                {1, 0, 0, 0, 0, 0},
+                {1, 1, 1, 1, 1, 1}
+*/
+
+/* maze output
+                1  0  0  1  1  1 
+                1  1  1  1  0  1 
+                0  0  0  0  0  1 
+                1  1  1  1  1  1 
+                1  0  0  0  0  0 
+                1  1  1  1  1  1
 
 */
 
-public class RatMaze
+public class RatMazeAllDirection
 {
-        public   RatMaze(){
+        public RatMazeAllDirection(){
             this.N = 4;
+            visited = new Stack<Point>();
         }
-        public  RatMaze(int N){
+        
+        Stack<Point> visited;
+        public RatMazeAllDirection(int N){
             this.N = N;
+            visited = new Stack<Point>();
         }
 	public int N;
 	//utility function to print the matrix
@@ -47,7 +64,17 @@ public class RatMaze
 	
 	//utility function to check if the move is valid
 	boolean isSafe(int maze[][], int x, int y){
-		return(x>=0 && x<N && y>=0 && y<N && maze[x][y]==1);
+            if(x>=0 && x<N && y>=0 && y<N && maze[x][y]==1){
+                
+                if( visited.contains(new Point(x,y))){
+                    return false;
+                }   
+                
+            return true;
+            }   
+            else {
+                return false;
+            }
 	}
 
         boolean solveMazeUtil(int maze[][], int x, int y, int sol[][]){
@@ -60,9 +87,10 @@ public class RatMaze
             }
             //check if maze[x][y] is valid
             if(isSafe(maze, x, y) == true){
+                
                 //mark x and y as sol path
                 sol[x][y] = 1;
-                
+                visited.push(new Point(x,y));
                 //move forward in x direction
                 if(solveMazeUtil(maze,x+1,y,sol)){
                     return true;
@@ -73,8 +101,18 @@ public class RatMaze
                     return true;
                 }
                 
+                //move backward in x direction
+                if(solveMazeUtil(maze,x-1,y,sol)){
+                    return true;
+                }
+                //move upward in y direction
+                if(solveMazeUtil(maze,x,y-1,sol)){
+                    return true;
+                }
+                
                 //if none of the moves are feasible
                 sol[x][y] = 0;
+                visited.pop();
                 return false;
             }
             return false;
@@ -92,13 +130,14 @@ public class RatMaze
                 System.out.println("Solution does not exists");
                 return false;
             }
+            System.out.println("Solution ");
             printSolution(sol);
             return true;
 	}
 	
         public static void main(String args[]){
-            RatMaze rat = new RatMaze();
-            RatMaze rat2 = new RatMaze(6);
+            RatMazeAllDirection rat = new RatMazeAllDirection();
+            RatMazeAllDirection rat2 = new RatMazeAllDirection(6);
             int maze[][] = {
                 {1, 1, 1, 0},
                 {1, 0, 1, 1},
@@ -106,16 +145,16 @@ public class RatMaze
                 {1, 1, 1, 1}
             };
             
-            int maze2[][] = {
-                {1, 1, 0, 0, 1, 1},
-                {1, 1, 1, 1, 1, 1},
+            int maze2[][] = { 
+                {1, 1, 0, 1, 1, 1},
+                {1, 1, 1, 1, 0, 1},
                 {0, 0, 0, 0, 0, 1},
                 {1, 1, 1, 1, 1, 1},
-                {1, 1, 1, 1, 1, 1},
+                {1, 0, 0, 0, 0, 0},
                 {1, 1, 1, 1, 1, 1}
             };
             
-            //rat.solveMaze(maze);
+            rat.solveMaze(maze);
             rat2.solveMaze(maze2);
         }
 }
