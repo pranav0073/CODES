@@ -43,13 +43,13 @@ public class RatMazeAllDirection
 {
         public RatMazeAllDirection(){
             this.N = 4;
-            visited = new Stack<Point>();
+            visited = new HashSet<Point>();
         }
         
-        Stack<Point> visited;
+        Set<Point> visited;
         public RatMazeAllDirection(int N){
             this.N = N;
-            visited = new Stack<Point>();
+            visited = new HashSet<Point>();
         }
 	public int N;
 	//utility function to print the matrix
@@ -90,7 +90,8 @@ public class RatMazeAllDirection
                 
                 //mark x and y as sol path
                 sol[x][y] = 1;
-                visited.push(new Point(x,y));
+                Point pt = new Point(x,y);
+                visited.add(pt);
                 //move forward in x direction
                 if(solveMazeUtil(maze,x+1,y,sol)){
                     return true;
@@ -112,7 +113,7 @@ public class RatMazeAllDirection
                 
                 //if none of the moves are feasible
                 sol[x][y] = 0;
-                visited.pop();
+                visited.remove(pt);
                 return false;
             }
             return false;
